@@ -19,10 +19,10 @@ export const content = {
   major: ['B.S. Applied Mathematics & Statistics', 'B.S. Business Management'],
   majorDescription: 'Graduated December 2025.',
   resume: {
-    // The Resume window embeds this page. It must be reachable from the visitor's browser, not just this Mac:
-    // once the Next.js site is deployed, swap in its public https:// URL. An http:// URL is blocked inside an
-    // https:// page, and an unreachable one falls back to the PDF below after a few seconds.
-    site: 'http://localhost:3000/#resume',
+    // The Resume window embeds this page. It has to be reachable from the visitor's browser, so it is the
+    // deployed site rather than a localhost URL. Verified embeddable: the response carries no X-Frame-Options
+    // and no CSP frame-ancestors. If it ever becomes unreachable, the window falls back to the PDF below.
+    site: 'https://keith-web-gamma.vercel.app/#resume',
     file: '/Keith-Lin-Resume.pdf'
   },
   projectsIntro: 'A collection of projects I’ve built, from data analysis to 3D design.',
