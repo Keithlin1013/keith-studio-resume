@@ -21,9 +21,9 @@ export const content = {
   resume: {
     // The Resume window embeds this page. It must be reachable from the visitor's browser, not just this Mac:
     // once the Next.js site is deployed, swap in its public https:// URL. An http:// URL is blocked inside an
-    // https:// page, and an unreachable one shows the "cannot load" panel after a few seconds.
-    // There is deliberately no `file`: the resume PDF is not published in this repo.
-    site: 'http://localhost:3000/#resume'
+    // https:// page, and an unreachable one falls back to the PDF below after a few seconds.
+    site: 'http://localhost:3000/#resume',
+    file: '/Keith-Lin-Resume.pdf'
   },
   projectsIntro: 'A collection of projects I’ve built, from data analysis to 3D design.',
   // `image` is the card thumbnail, 16:10, served from public/projects/.

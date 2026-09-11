@@ -108,18 +108,13 @@ export function createComputer(config,{onExit}={}){
   }
   sheet.append(head,grid);return sheet;
  }
- // Keith's call: the Resume window shows the real thing — the live resume page. The PDF is not published in this
- // repo, so `config.resume.file` is normally absent and this renders an honest "could not load" panel. The file
- // path is still honoured if one is ever configured again, for browsers that can and cannot embed PDFs alike.
+ // Keith's call: the Resume window shows the real thing. First choice is the live resume page; the PDF is the
+ // fallback, and browsers that cannot render PDFs inline get an open/download panel instead.
  function canEmbedPdf(){const v=navigator.pdfViewerEnabled;return typeof v==='boolean'?v:!matchMedia('(pointer: coarse)').matches;}
  function renderPdf(){
   const file=config.resume?.file,name=files.find(f=>f.id==='resume').name;
   if(file&&canEmbedPdf()){const frame=el('iframe','os-embed');frame.src=file+'#toolbar=0&navpanes=0&view=FitH';frame.title=name;return frame;}
-  const box=el('div','os-pdf-fallback');box.innerHTML=docIcon('pdf');
-  const why=file?'This browser cannot show the PDF here.'
-   :config.email?'The resume could not be loaded. Email '+config.email+' and I will send it over.'
-   :'The resume could not be loaded right now.';
-  box.append(el('strong',null,name),el('p',null,why));
+  const box=el('div','os-pdf-fallback');box.innerHTML=docIcon('pdf');box.append(el('strong',null,name),el('p',null,'This browser cannot show the PDF here.'));
   if(file){external(box,'Open PDF',file,'os-action');const d=el('a','os-action','Download PDF');d.href=file;d.setAttribute('download','');box.append(d);}
   return box;
  }
