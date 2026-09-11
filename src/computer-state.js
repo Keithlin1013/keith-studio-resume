@@ -1,6 +1,6 @@
 // Pure state for the computer layer. The DOM in computer.js only renders what this returns.
 export const files=[
- {id:'resume',name:'Resume.pdf',kind:'PDF document',app:'preview'},
+ {id:'resume',name:'Resume',kind:'Resume',app:'preview'},
  {id:'projects',name:'Projects',kind:'Folder',app:'finder'},
  {id:'about',name:'About Me.txt',kind:'Plain text',app:'textedit'}
 ];
