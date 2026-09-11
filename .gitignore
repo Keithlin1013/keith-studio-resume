@@ -11,3 +11,9 @@ dist/
 
 # vercel
 .vercel
+
+# design-tool caches, not part of the project
+.impeccable/
+
+# local editor/agent config
+.claude/

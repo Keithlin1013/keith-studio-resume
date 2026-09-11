@@ -1,33 +1,110 @@
-# Studio Hero — 房间视差与物品交互
+# Studio
 
-最新可编辑场景：`../Blue_Workstation_C300.blend`。Hero 使用用户确认的斜俯视方向，补齐左右侧墙，右侧包含完整窗框、窗台、白色百叶窗与冷色窗光。原 Marshall 和 Odyssey 文件均保留。
+An interactive 3D resume. You arrive in a rendered room, walk up to the desk, and
+everything on it is the navigation: the speaker opens a music player, the phone wakes
+for contact details, the monitor opens a full desktop with the resume and project
+write-ups on it.
 
-## 当前体验
+Built with vanilla ES modules, Vite and Three.js. No framework.
 
-- 无常驻玻璃圆按钮；直接点击物品。键盘 Tab 可聚焦同一物品区域。
-- 点击音箱打开与音箱投影宽度接近的玻璃播放器，包含封面、歌名、播放/暂停、上一首/下一首、进度与音量。关闭播放器不会强制停止音乐，再点音箱可以打开。
-- 支持选择多个本地音频组成播放列表，读取常见 ID3v2.3/v2.4 歌名、歌手及内嵌封面；也可自行选择封面。文件仅在当前浏览器使用，刷新后需重新选择。
-- 手机初始黑屏，点击亮屏并打开旁边的联系方式卡片。关闭卡片仍保持亮屏；再点手机可重开。卡片中可关闭手机屏幕。
-- SBU 信息卡和屏幕灯开关保留。所有卡片支持关闭按钮和 Escape。
-- 电脑显示内容由 4096×1720 Canvas 绘制到原曲面屏几何体上，壁纸保持裁切比例，时钟、日历、菜单、Dock 独立绘制。手机显示内容也单独绘制。日期时间跟随访问者设备时间。
-- 鼠标小幅移动相机；点击区域、屏幕和浮层锚点同步投影。减少动态效果设置下关闭鼠标视差，触屏使用横向浏览与点击。
+## How the room works
 
-## 呈现方式
+The room is not a real-time 3D scene, and it is not a flat screenshot either. It is a
+**2.5D depth reconstruction**, which keeps Blender Cycles material quality while still
+letting the camera move.
 
-背景为 3600×2250 Blender Cycles 灯开/关渲染，结合场景射线采样得到的深度网格，通过 Three.js 小幅移动相机形成视差。这是有限视角的深度重建（2.5D），保留渲染材质质量；不是整套完整实时场景，也不适合大幅旋转或大距离推进。电脑和手机显示表面使用原始 3D 几何与动态纹理。
+1. **Blender renders the room twice** per viewpoint at 3600×2104 — once with the desk
+   lamp on, once off — plus a mask image whose red channel marks the SBU monument and
+   whose green channel marks the speaker.
+2. **A depth grid is ray-cast from the same camera**: 261 × 153 = 39,933 samples, each
+   recording how far the first surface is along that pixel's ray. It ships as
+   `scene.json`.
+3. **Three.js displaces a plane by that grid**, so every vertex sits at the depth
+   Blender measured. The render is the texture. Moving the camera a few centimetres
+   produces real parallax instead of a flat pan.
+4. **A ShaderMaterial cross-fades the two renders** for the lamp switch, and adds a
+   blurred bloom from the mask when an object lights up.
 
-网页不是 Blender 界面截图。原 Blender 文件里电脑屏幕使用打包的高清桌面静态纹理，实时日期与交互运行在网页端。旧 GLB 未同步这次房间更新，当前网页不加载该 GLB。
+The trade-off is deliberate: this holds up for small camera movement, not for orbiting
+or walking through the room.
 
-先前讨论的完整滚动章节与 Hero 屏幕递归尚未接入本版。专业、联系方式与默认歌曲尚未提供，未编造。可在 `src/content.js` 填写个人信息，使用 `playlist: [{title, artist, url, cover}]` 配置公开播放列表；本地导入的文件不会成为公开站点内容。
+There are two viewpoints — `hero-living` (the entrance) and `hero-desk-wide` (at the
+desk) — with a portal transition between them.
 
-## 本机运行
+## The other pieces
 
-`node node_modules/vite/bin/vite.js --host 127.0.0.1 --port 4173`
+**Clickable objects.** Each interactive object's 3D bounding points are projected to
+screen space every frame, wrapped in a convex hull, and applied to a button as a CSS
+`clip-path` polygon. The hit area is the object's actual silhouette, not a rectangle.
+On touch devices it falls back to a 44px minimum rectangle.
 
-构建：`node node_modules/vite/bin/vite.js build`
+**Panels on the wall.** The About and Navigation panels are ordinary HTML, projected
+onto their wall quad with a homography solved per frame and applied as a `matrix3d`
+transform. They stay glued to the wall as the camera moves.
 
-主要资源：`public/hero/`。渲染脚本与网页旧版本备份在工作区 `work/`。测试覆盖音箱开关浮层、两首歌曲切换及暂停、封面更换、手机亮灭和卡片重开、SBU 信息、灯光切换、鼠标视差、手机屏幕与浏览器错误。
+**Live screens.** The monitor and phone are the original curved Blender geometry with
+canvas textures drawn on them, so the clock and calendar show the visitor's own device
+time rather than a baked-in screenshot.
 
-## 显示器支架与 C300 椅子
+**The computer.** Clicking the monitor opens a full-screen desktop layer with working
+traffic-light controls. Its state is a pure reducer in `computer-state.js`, which is
+what the unit tests exercise.
 
-显示器立柱已延伸并增加连接座，与 V 形底座实体相交，消除原间隙。旧椅子及扶手装饰线已归档隐藏；新椅子按用户 Sihoo C300 图片制作开放网布座面、腰托、靠背、头枕、扶手、五爪金属底座和双轮。它是参照外观的可编辑模型，并非厂家 CAD。Hero 沿用既定视角，椅子作为前景部分裁切，完整模型可在 Blender 中查看；独立近景为 `../Sihoo_C300_Detail.png`。新版背景与深度数据位于 `public/hero-c300/`。
+**The chair** is a separate GLB with runtime animation, composited over the still
+render, because a moving object cannot be baked into a static background.
+
+## Running it
+
+```bash
+npm install
+npm run dev
+```
+
+Opens on http://127.0.0.1:4174 (`--strictPort`, so a port clash fails loudly instead of
+silently serving something else).
+
+```bash
+npm run build        # -> dist/
+node --test src/*.test.js
+```
+
+24 unit tests cover the pure logic: glow state, chair and leaf motion, the computer
+reducer, and screen-rect fitting.
+
+## Layout
+
+```
+src/
+  main.js            entry: wiring, hit regions, cards, the entrance/desk transition
+  scene.js           depth-mesh reconstruction, the cross-fade shader, live screens
+  computer.js        the full-screen desktop layer
+  computer-state.js  pure reducer for that layer  (tested)
+  about-wall.js      homography that projects HTML onto the wall quad
+  navigation.js      wall and desk navigation
+  living-objects.js  the animated chair GLB          (tested)
+  glow-state.js      which object is lit, and why    (tested)
+  screen-rect.js     fitting the desktop to the monitor (tested)
+  displays.js        canvas textures for the monitor and phone
+  content.js         all owner-supplied content
+public/
+  hero-living/       entrance: two WebP renders, depth grid, chair GLB
+  hero-desk-wide/    desk viewpoint: same set
+  hero-entrance/     the interaction mask
+```
+
+## Editing the content
+
+Everything a visitor reads lives in `src/content.js` — name, contact, about copy,
+projects, and the playlist. Nothing is generated or inferred from elsewhere.
+
+Project thumbnails are 16:10 WebP files in `public/projects/`.
+
+## A note on asset size
+
+The renders are photographic, so they ship as WebP rather than PNG: 32.7 MB of source
+PNGs compress to 2.2 MB with no visible difference. The interaction masks stay PNG,
+because the shader reads their red and green channels exactly and lossy compression
+would bleed one into the other.
+
+A first visit downloads about 9 MB, most of it the two viewpoints' renders and the
+chair GLB.
