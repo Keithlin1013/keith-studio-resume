@@ -1,0 +1,20 @@
+#music-card{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:8px;row-gap:3px;padding:14px 15px 10px;border-radius:var(--radius-compact)}
+#music-card[hidden]{display:none}
+#music-card .dismiss{width:22px;height:22px;right:3px;top:2px;font-size:17px}
+#music-card .track{gap:9px;padding-right:0;min-width:0}
+#music-card .cover{width:36px;height:36px;border-radius:var(--radius-small)}
+#music-card .cover svg{width:20px;height:20px}
+#music-card .track strong{font-size:12.5px;line-height:1.4}
+#music-card .track-copy span{font-size:11px;margin-top:2px}
+#music-card .transport{margin:4px 4px 0 0;gap:1px;align-self:center}
+#music-card .transport button{padding:5px 3px;min-width:25px;min-height:30px}
+#music-card .transport svg{width:14px;height:14px}
+#music-card #play svg{width:21px;height:21px}
+#music-card #seek{grid-column:1/-1;margin:7px 0 3px}
+#music-card .track-meta{grid-column:1/-1;font-size:11px}
+#music-card .track-meta button{padding:3px 0;font-size:11px}
+#music-card .music-options{grid-column:1/-1;margin:2px 0 0;gap:8px}
+#music-card .music-options button{padding:3px 0;font-size:11px;color:#e6eef7}
+#music-card .music-options label{font-size:11px;gap:6px}
+#music-card .music-options input{width:52px}
+#music-card #music-message{grid-column:1/-1;font-size:11px;margin:2px 0 0}

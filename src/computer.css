@@ -1,0 +1,120 @@
+#computer{position:fixed;inset:0;z-index:9;background:#0b1524;color:#f5f6f9;transform-origin:0 0;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+#computer[hidden]{display:none}
+.os-wallpaper{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.os-shade{position:absolute;inset:0;background:linear-gradient(#14243a33,#0b172622);pointer-events:none}
+
+/* Menu bar: app name, clock, and the only way out. Nothing decorative.
+   The menu bar and window title bars are <div>s on purpose: style.css styles the site's <header> globally (fixed, offset, pointer-events:none). */
+.os-menubar{position:absolute;left:0;right:0;top:0;height:30px;display:flex;align-items:center;gap:14px;padding:0 12px 0 16px;background:#0d1a2acc;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid #ffffff14;font-size:13px}
+.os-app-name{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.os-clock{margin-left:auto;flex:none;white-space:nowrap;font-variant-numeric:tabular-nums;color:#dfe8f2}
+.os-standup{flex:none;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 10px 0 8px;border:1px solid #ffffff24;border-radius:var(--radius-pill);background:#ffffff0f;color:inherit;font:inherit;font-size:12px;cursor:pointer;transition:background .2s,border-color .2s}
+.os-standup:hover,.os-standup:focus-visible{background:#ffffff1f;border-color:#ffffff40}
+.os-standup .os-icon{width:14px;height:14px}
+
+.os-icon{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}
+/* File icons are macOS-style: filled and coloured, so they carry their own paint rather than currentColor. */
+.os-fileicon{display:block;width:56px;height:56px;filter:drop-shadow(0 2px 3px #00000047)}
+
+/* Desktop files: top-right column, the macOS habit. */
+.os-files{position:absolute;top:52px;right:28px;display:flex;flex-direction:column;gap:6px}
+.os-file{width:88px;padding:8px 4px 6px;border:0;border-radius:8px;background:none;color:inherit;font:inherit;font-size:12.5px;line-height:1.25;text-align:center;text-shadow:0 1px 2px #000a;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:background .15s}
+.os-file:hover{background:#ffffff14}
+.os-file-name{display:block;max-width:84px;overflow-wrap:anywhere}
+/* With no Dock, a minimized window lives on its own icon. The dot marks real state, the way the Dock's does. */
+.os-file.is-minimized .os-file-name:after{content:'';display:block;width:4px;height:4px;margin:5px auto 0;border-radius:50%;background:#f2f7ffe0;box-shadow:0 1px 2px #000a}
+
+/* One window at a time, centred below the menu bar. */
+.os-window-host{position:absolute;inset:30px 0 0;display:grid;place-items:center;pointer-events:none}
+.os-window{pointer-events:auto;display:flex;flex-direction:column;width:min(760px,92vw);height:min(78vh,640px);border:1px solid #ffffff1f;border-radius:var(--radius-compact);background:#1a2636;box-shadow:0 24px 70px #00000080;overflow:hidden;opacity:0;transform:scale(.96);transition:opacity .16s,transform .16s}
+.os-window.is-open{opacity:1;transform:none;transition:opacity .22s,transform .22s cubic-bezier(.22,1,.36,1)}
+/* Full screen fills everything under the menu bar, so Stand up is never out of reach. */
+.os-window.is-fullscreen{width:100%;height:100%;border-radius:0;border:0;box-shadow:none}
+/* Minimized windows stay in the DOM: an embedded page keeps its scroll and its own state. */
+.os-window.is-minimized{display:none}
+.os-titlebar{position:relative;display:flex;align-items:center;min-height:38px;padding:8px 12px;box-sizing:border-box;background:#152030;border-bottom:1px solid #ffffff12;flex:none}
+/* Traffic lights: close, minimize, full screen. Glyphs appear on hover or focus, as on macOS. */
+.os-lights{display:flex;align-items:center;gap:8px;flex:none}
+.os-light{width:12px;height:12px;padding:0;border:0;border-radius:50%;box-shadow:inset 0 0 0 1px #00000024;cursor:pointer;flex:none;display:grid;place-items:center}
+.os-light:focus-visible{outline:2px solid #e4efff;outline-offset:3px}
+.os-close{background:#ff5f57}
+.os-minimize{background:#febc2e}
+.os-zoom{background:#28c840}
+.os-light svg{width:12px;height:12px;opacity:0;fill:none;stroke:#00000080;stroke-width:1.5;stroke-linecap:round;transition:opacity .15s}
+.os-zoom svg{fill:#00000080;stroke:none}
+.os-lights:hover .os-light svg,.os-lights:focus-within .os-light svg{opacity:1}
+.os-back{margin-left:14px;padding:3px 8px 3px 6px;border:0;border-radius:6px;background:#ffffff10;color:#dfe8f2;font:inherit;font-size:12px;cursor:pointer}
+.os-back:before{content:'‹';margin-right:4px}
+.os-title{position:absolute;left:50%;transform:translateX(-50%);margin:0;max-width:60%;font-size:13px;font-weight:500;color:#dfe8f2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.os-toolbar{display:flex;justify-content:flex-end;gap:8px;padding:8px 12px;border-bottom:1px solid #ffffff12;background:#182434;flex:none}
+.os-action{display:inline-block;padding:7px 12px;border:1px solid #c2d6e54d;border-radius:var(--radius-pill);background:#1a2d4266;color:#eef4ff;font-size:11.5px;letter-spacing:.02em;text-decoration:none;transition:background .2s,border-color .2s}
+.os-action:hover,.os-action:focus-visible{background:#243a5299;border-color:#c2d6e580}
+.os-body{flex:1;overflow:auto;padding:24px;scrollbar-width:thin;scrollbar-color:#c2d6e540 transparent}
+.os-body:has(.os-sheet){padding:0}
+
+/* Resume: the live resume page (or the PDF) fills the window body; a panel stands in where neither can render. */
+.os-body:has(.os-embed){padding:0;display:flex}
+.os-embed{display:block;flex:1;min-height:0;width:100%;border:0;background:#1a2636}
+.os-pdf-fallback{max-width:360px;margin:40px auto;padding:28px 24px;border-radius:var(--radius-compact);background:#152030;border:1px solid #ffffff14;text-align:center;color:#dfe8f2}
+.os-pdf-fallback .os-fileicon{margin:0 auto 10px}
+.os-pdf-fallback strong{display:block;font-size:14px;margin-bottom:4px}
+.os-pdf-fallback p{margin:0 0 16px;font-size:12.5px;color:#9fb3c5}
+.os-pdf-fallback .os-action{margin:0 4px}
+
+/* Documents: content laid straight on the light sheet, no floating card. */
+.os-doc .os-action{margin-top:14px;color:#1b2430;border-color:#1b243040;background:#1b243010}
+.os-doc{font-size:12.5px;line-height:1.6}
+.os-entry-meta{color:#5b6b7d;font-size:11.5px}
+.os-bullets{margin:2px 0 6px;padding-left:18px}
+.os-bullets li{margin:2px 0}
+.os-doc-text{margin:0 0 8px}
+.os-doc-title{margin:0 0 4px;font-size:20px;font-weight:600;letter-spacing:-.01em}
+.os-doc-sub{margin:0 0 6px;font-size:13px;color:#3c4a5a}
+.os-doc-lede{margin:0 0 14px;font-size:14px;line-height:1.55}
+
+/* Projects: a light sheet of wide cards, thumbnail on the left, the way they read on the personal site. */
+.os-sheet{min-height:100%;box-sizing:border-box;padding:34px 30px 40px;background:#f7f9fc;color:#1b2430}
+.os-sheet-head{max-width:900px;margin:0 auto 22px}
+.os-sheet-head h2{margin:0 0 6px;font-size:30px;font-weight:600;letter-spacing:-.025em}
+.os-sheet-head p{margin:0;font-size:14px;line-height:1.55;color:#5b6b7d}
+.os-cards{display:flex;flex-direction:column;gap:14px;max-width:900px;margin:0 auto}
+.os-card{display:grid;grid-template-columns:264px 1fr;gap:22px;align-items:start;padding:20px;border:1px solid #1b243021;border-radius:16px;background:#fff;cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.os-card.is-plain{grid-template-columns:1fr}
+.os-card:hover,.os-card:has(:focus-visible){border-color:#1b24303d;box-shadow:0 8px 22px #1b243014}
+.os-card-thumb{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px;background:#eef2f7}
+.os-card-body{display:flex;flex-direction:column;min-width:0}
+.os-card-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.os-card-head h3{margin:0;font-size:17px;font-weight:600;letter-spacing:-.015em}
+.os-card-date{flex:none;font-size:12px;color:#8b97a6}
+.os-card p{margin:8px 0 0;font-size:13px;line-height:1.65;color:#5b6b7d}
+.os-card .os-pills{margin:12px 0 0}
+.os-card-cta{align-self:flex-end;margin-top:14px;display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid #1b24302e;border-radius:10px;background:#fff;font:inherit;font-size:12.5px;font-weight:500;color:#1b2430;cursor:pointer;transition:background .2s,border-color .2s}
+.os-card-cta:hover,.os-card-cta:focus-visible{background:#1b24300a;border-color:#1b243052}
+.os-cta-arrow{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+/* A project page: same light sheet as the card list, content straight on it rather than a floating card. */
+.os-doc{max-width:720px;margin:0 auto}
+.os-doc-hero{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px;margin:0 0 22px;border:1px solid #1b243021}
+/* The stack shows as outlined pills, on the card and again on the project page. */
+.os-pills{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:10px 0 14px}
+.os-pills li{padding:2px 10px;border:1px solid #1b243026;border-radius:12px;font-size:11.5px;color:#5b6b7d}
+
+@media(max-width:699px){
+ .os-menubar{gap:10px;padding:0 10px 0 14px}.os-clock{font-size:12px}
+ .os-files{top:44px;right:0;left:0;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:4px 8px;padding:0 10px}
+ .os-fileicon{width:52px;height:52px}
+}
+/* Narrow or short viewports (phones, including landscape): windows already fill the screen, so no zoom control. */
+@media(max-width:699px),(max-height:419px){
+ .os-window{width:100%;height:100%;border-radius:0;border:0}
+ .os-zoom{display:none}
+ .os-body{padding:16px;padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+ .os-sheet{padding:22px 16px calc(28px + env(safe-area-inset-bottom))}
+ .os-sheet-head{margin-bottom:16px}.os-sheet-head h2{font-size:24px}
+ .os-cards{gap:12px}
+ .os-card{grid-template-columns:1fr;gap:14px;padding:16px}
+ .os-card-cta{align-self:flex-start}
+}
+@media(prefers-reduced-motion:reduce){
+ .os-window,.os-standup,.os-file{transition:none}
+ .os-window{opacity:1;transform:none}
+}

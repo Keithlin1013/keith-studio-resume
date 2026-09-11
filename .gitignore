@@ -1,0 +1,13 @@
+# dependencies
+node_modules/
+
+# build output — Vercel builds this from source, it must not be committed
+dist/
+
+# local dev
+.DS_Store
+*.log
+/tmp/
+
+# vercel
+.vercel
