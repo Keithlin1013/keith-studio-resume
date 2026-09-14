@@ -22,7 +22,7 @@ export const content = {
     // The Resume window embeds this page. It has to be reachable from the visitor's browser, so it is the
     // deployed site rather than a localhost URL. Verified embeddable: the response carries no X-Frame-Options
     // and no CSP frame-ancestors. If it ever becomes unreachable, the window falls back to the PDF below.
-    site: 'https://keith-web-gamma.vercel.app/#resume',
+    site: 'https://keith-web-gamma.vercel.app',
     file: '/Keith-Lin-Resume.pdf'
   },
   projectsIntro: 'A collection of projects I’ve built, from data analysis to 3D design.',
